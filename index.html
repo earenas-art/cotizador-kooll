@@ -259,4 +259,266 @@
 
                     <!-- Puntos a Realizar -->
                     <div class="mb-6">
-                        <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2 border-b pb-1">P
+                        <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2 border-b pb-1">Puntos a Realizar y Observaciones</h3>
+                        <p class="text-[11px] font-semibold text-slate-700 mb-1">Proceso de Mantenimiento:</p>
+                        <ul id="docPuntosList" class="list-disc list-inside text-[11px] text-slate-600 space-y-0.5 pl-1"></ul>
+                    </div>
+                </div>
+
+                <!-- Totales, Términos y Firma -->
+                <div>
+                    <div class="grid grid-cols-12 gap-6 items-start border-t border-slate-200 pt-4">
+                        <div class="col-span-7">
+                            <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-1.5">Términos y Condiciones</h3>
+                            <ul id="docTerminosList" class="list-disc list-inside text-[10px] text-slate-600 space-y-1"></ul>
+                        </div>
+
+                        <div class="col-span-5 bg-slate-50 p-3 rounded-lg border border-slate-200">
+                            <div class="space-y-1.5 text-xs">
+                                <div class="flex justify-between text-slate-600">
+                                    <span>Subtotal</span>
+                                    <span class="font-semibold" id="docSubtotal">\$0.00</span>
+                                </div>
+                                <div class="flex justify-between text-slate-600" id="rowIva">
+                                    <span>IVA (16%)</span>
+                                    <span class="font-semibold" id="docIva">\$0.00</span>
+                                </div>
+                                <div class="flex justify-between text-sm font-black text-slate-900 border-t border-slate-300 pt-1.5 mt-1">
+                                    <span>TOTAL MXN</span>
+                                    <span class="text-sky-700" id="docTotal">\$0.00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 pt-4 border-t border-slate-100 flex justify-between items-end">
+                        <div class="text-[10px] text-slate-400">
+                            <p>Mantenimientos preventivos cumpliendo con los estándares de calidad establecidos.</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-40 border-b border-slate-400 mb-1"></div>
+                            <p class="text-xs font-bold text-slate-800 uppercase" id="docTecnicoFirma">EMILIO ÁNGEL VÁZQUEZ TORRES</p>
+                            <p class="text-[10px] text-slate-500">Técnico Responsable</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const defaultData = {
+            folio: "105",
+            fecha: "13 de Octubre, 2026",
+            vigencia: "15 Días",
+            clienteEmpresa: "LOCKTON MEXICO AGENTE DE SEGUROS Y FIANZAS",
+            clienteSucursal: "Oficinas Insurgentes",
+            clienteAtencion: "Alejandro Gomez",
+            tecnico: "Emilio Ángel Vázquez Torres",
+            telefono: "477 174 3776",
+            aplicarIva: true,
+            items: [
+                {
+                    titulo: "Mantenimiento Preventivo HVAC - Mini Split",
+                    descripcion: "Servicio de mantenimiento preventivo equipo de aire acondicionado tipo Mini Split. Incluye limpieza de serpentín, medición de presión, chequeo de fugas y limpieza de tarjeta.",
+                    cantidad: 1,
+                    precio: 1280.00
+                },
+                {
+                    titulo: "Mantenimiento Preventivo HVAC - Manejadora",
+                    descripcion: "Servicio de mantenimiento preventivo equipo de aire acondicionado tipo Manejadora.",
+                    cantidad: 1,
+                    precio: 2750.00
+                },
+                {
+                    titulo: "Mantenimiento Preventivo HVAC - Precisión",
+                    descripcion: "Servicio de mantenimiento preventivo equipo de aire acondicionado tipo Precisión de 1TR a 9 TR.",
+                    cantidad: 1,
+                    precio: 6000.00
+                }
+            ],
+            puntos: [
+                "Estado físico del serpentín y limpieza con producto Forchner.",
+                "Medición en presión en tuberías y chequeo de posibles fugas.",
+                "Limpieza y chequeo de turbina y motores.",
+                "Chequeo tubería de dren, aislantes térmicos.",
+                "Tarjeta electrónica chequeo y limpieza con dieléctrico WD40.",
+                "Pruebas de control y funcionamiento."
+            ],
+            terminos: [
+                "Los correctivos de los equipos serán diagnosticados y previamente validados y autorizados.",
+                "Cualquier mantenimiento correctivo será informado al cliente y notificado en el reporte que se entregará al finalizar los trabajos.",
+                "Condiciones de Pago: Para comenzar a realizar los trabajos se debe de considerar un anticipo del 70%, el restante al terminar los trabajos."
+            ]
+        };
+
+        let currentData = JSON.parse(JSON.stringify(defaultData));
+
+        window.onload = function() {
+            loadFormValues();
+            renderItemsForm();
+            updateDocument();
+        };
+
+        function loadFormValues() {
+            document.getElementById('inputFolio').value = currentData.folio;
+            document.getElementById('inputFecha').value = currentData.fecha;
+            document.getElementById('inputVigencia').value = currentData.vigencia;
+            document.getElementById('inputClienteEmpresa').value = currentData.clienteEmpresa;
+            document.getElementById('inputClienteSucursal').value = currentData.clienteSucursal;
+            document.getElementById('inputClienteAtencion').value = currentData.clienteAtencion;
+            document.getElementById('inputTecnico').value = currentData.tecnico;
+            document.getElementById('inputTelefono').value = currentData.telefono;
+            document.getElementById('inputAplicarIVA').checked = currentData.aplicarIva;
+            
+            document.getElementById('inputPuntos').value = currentData.puntos.join('\n');
+            document.getElementById('inputTerminos').value = currentData.terminos.join('\n');
+        }
+
+        function renderItemsForm() {
+            const container = document.getElementById('itemsContainer');
+            container.innerHTML = '';
+
+            currentData.items.forEach((item, index) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'p-3 bg-slate-50 rounded-lg border border-slate-200 relative space-y-2';
+                itemDiv.innerHTML = `
+                    <button onclick="removeItem(${index})" class="absolute top-2 right-2 text-red-500 hover:text-red-700 text-xs font-bold p-1">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                    <div>
+                        <input type="text" value="${escapeHtml(item.titulo)}" oninput="updateItem(${index}, 'titulo', this.value)" 
+                               placeholder="Título del Servicio" class="w-full px-2 py-1 text-xs border rounded font-bold">
+                    </div>
+                    <div>
+                        <textarea oninput="updateItem(${index}, 'descripcion', this.value)" rows="2"
+                                  placeholder="Descripción detallada" class="w-full px-2 py-1 text-xs border rounded">${escapeHtml(item.descripcion)}</textarea>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-[10px] text-slate-500 block">Cantidad</label>
+                            <input type="number" value="${item.cantidad}" oninput="updateItem(${index}, 'cantidad', parseFloat(this.value) || 0)" 
+                                   class="w-full px-2 py-1 text-xs border rounded">
+                        </div>
+                        <div>
+                            <label class="text-[10px] text-slate-500 block">Precio Unitario ($)</label>
+                            <input type="number" step="0.01" value="${item.precio}" oninput="updateItem(${index}, 'precio', parseFloat(this.value) || 0)" 
+                                   class="w-full px-2 py-1 text-xs border rounded">
+                        </div>
+                    </div>
+                `;
+                container.appendChild(itemDiv);
+            });
+        }
+
+        function addItem() {
+            currentData.items.push({
+                titulo: "Nuevo Servicio HVAC",
+                descripcion: "Descripción del servicio realizado.",
+                cantidad: 1,
+                precio: 0.00
+            });
+            renderItemsForm();
+            updateDocument();
+        }
+
+        function removeItem(index) {
+            if (currentData.items.length > 1) {
+                currentData.items.splice(index, 1);
+                renderItemsForm();
+                updateDocument();
+            } else {
+                alert("La cotización debe contener al menos un concepto.");
+            }
+        }
+
+        function updateItem(index, field, value) {
+            currentData.items[index][field] = value;
+            updateDocument();
+        }
+
+        function updateDocument() {
+            currentData.folio = document.getElementById('inputFolio').value;
+            currentData.fecha = document.getElementById('inputFecha').value;
+            currentData.vigencia = document.getElementById('inputVigencia').value;
+            currentData.clienteEmpresa = document.getElementById('inputClienteEmpresa').value;
+            currentData.clienteSucursal = document.getElementById('inputClienteSucursal').value;
+            currentData.clienteAtencion = document.getElementById('inputClienteAtencion').value;
+            currentData.tecnico = document.getElementById('inputTecnico').value;
+            currentData.telefono = document.getElementById('inputTelefono').value;
+            currentData.aplicarIva = document.getElementById('inputAplicarIVA').checked;
+
+            document.getElementById('docFolio').innerText = currentData.folio;
+            document.getElementById('docFecha').innerText = currentData.fecha;
+            document.getElementById('docVigencia').innerText = currentData.vigencia;
+            document.getElementById('docClienteEmpresa').innerText = currentData.clienteEmpresa;
+            document.getElementById('docClienteSucursal').innerText = currentData.clienteSucursal;
+            document.getElementById('docClienteAtencion').innerText = currentData.clienteAtencion;
+            document.getElementById('docTecnico').innerText = currentData.tecnico;
+            document.getElementById('docTecnicoFirma').innerText = currentData.tecnico;
+            document.getElementById('docTelefono').innerText = currentData.telefono;
+
+            const tbody = document.getElementById('docItemsBody');
+            tbody.innerHTML = '';
+            let subtotal = 0;
+
+            currentData.items.forEach(item => {
+                const totalItem = item.cantidad * item.precio;
+                subtotal += totalItem;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <div class="font-bold text-slate-800">${escapeHtml(item.titulo)}</div>
+                        <div class="text-[11px] text-slate-600 leading-tight mt-0.5">${escapeHtml(item.descripcion)}</div>
+                    </td>
+                    <td class="text-center font-medium">${item.cantidad}</td>
+                    <td class="text-right font-medium">$${formatMoney(item.precio)}</td>
+                    <td class="text-right font-bold text-slate-800">$${formatMoney(totalItem)}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            const iva = currentData.aplicarIva ? subtotal * 0.16 : 0;
+            const total = subtotal + iva;
+
+            document.getElementById('docSubtotal').innerText = `$${formatMoney(subtotal)}`;
+            document.getElementById('docIva').innerText = `$${formatMoney(iva)}`;
+            document.getElementById('docTotal').innerText = `$${formatMoney(total)}`;
+
+            document.getElementById('rowIva').style.display = currentData.aplicarIva ? 'flex' : 'none';
+
+            const puntosText = document.getElementById('inputPuntos').value;
+            currentData.puntos = puntosText.split('\n').filter(p => p.trim() !== '');
+            const puntosContainer = document.getElementById('docPuntosList');
+            puntosContainer.innerHTML = currentData.puntos.map(p => `<li>${escapeHtml(p)}</li>`).join('');
+
+            const terminosText = document.getElementById('inputTerminos').value;
+            currentData.terminos = terminosText.split('\n').filter(t => t.trim() !== '');
+            const terminosContainer = document.getElementById('docTerminosList');
+            terminosContainer.innerHTML = currentData.terminos.map(t => `<li>${escapeHtml(t)}</li>`).join('');
+        }
+
+        function resetData() {
+            currentData = JSON.parse(JSON.stringify(defaultData));
+            loadFormValues();
+            renderItemsForm();
+            updateDocument();
+        }
+
+        function formatMoney(amount) {
+            return amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function escapeHtml(text) {
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>
