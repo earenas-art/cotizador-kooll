@@ -18,7 +18,7 @@
         .paper-page {
             width: 210mm;
             min-height: 297mm;
-            padding: 18mm;
+            padding: 12mm 16mm;
             margin: 0 auto;
             background: white;
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
@@ -30,40 +30,42 @@
         }
 
         @media print {
-    body { 
-        background: white !important; 
-        padding: 0 !important; 
-        margin: 0 !important; 
-    }
-    .no-print { 
-        display: none !important; 
-    }
-    .paper-page {
-        box-shadow: none !important;
-        padding: 8mm 12mm !important; /* Se redujo el margen superior/inferior */
-        width: 100% !important;
-        min-height: 100vh !important;
-        margin: 0 !important;
-    }
-    @page { 
-        size: letter portrait; 
-        margin: 0; 
-    }
-}
+            body { 
+                background: white !important; 
+                padding: 0 !important; 
+                margin: 0 !important; 
+            }
+            .no-print { 
+                display: none !important; 
+            }
+            .paper-page {
+                box-shadow: none !important;
+                padding: 6mm 10mm !important; /* Espaciado compacto para impresión */
+                width: 100% !important;
+                height: 100vh !important;
+                min-height: auto !important;
+                margin: 0 !important;
+                overflow: hidden !important;
+            }
+            @page { 
+                size: letter portrait; 
+                margin: 0; 
+            }
+        }
 
         .quote-table th {
             background-color: #f8fafc;
             color: #334155;
             font-weight: 700;
             text-transform: uppercase;
-            font-size: 0.75rem;
+            font-size: 0.70rem;
             border-bottom: 2px solid #e2e8f0;
-            padding: 10px 12px;
+            padding: 6px 8px; /* Reducción de relleno en la tabla */
         }
         .quote-table td {
             border-bottom: 1px solid #f1f5f9;
-            padding: 10px 12px;
-            font-size: 0.875rem;
+            padding: 6px 8px; /* Reducción de relleno en las celdas */
+            font-size: 0.80rem;
         }
 
         .corner-accent {
@@ -73,7 +75,7 @@
             width: 0;
             height: 0;
             border-style: solid;
-            border-width: 0 80px 80px 0;
+            border-width: 0 60px 60px 0;
             border-color: transparent #93c5fd transparent transparent;
         }
     </style>
