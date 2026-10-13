@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generador de Cotizaciones - KOOLL Aire Acondicionado</title>
+    <!-- Tailwind CSS CDN sin bloqueo -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -14,21 +15,13 @@
             color: #1f2937;
         }
 
-        /* Colores corporativos basados en el PDF */
-        .brand-blue { color: #0284c7; }
-        .bg-brand-blue { background-color: #0284c7; }
-        .brand-dark { color: #1e293b; }
-        .bg-brand-dark { background-color: #1e293b; }
-        .border-brand { border-color: #0284c7; }
-
-        /* Estilos específicos para la hoja A4 de vista previa */
         .paper-page {
             width: 210mm;
             min-height: 297mm;
-            padding: 18mm 18mm 18mm 18mm;
+            padding: 18mm;
             margin: 0 auto;
             background: white;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
             position: relative;
             box-sizing: border-box;
             display: flex;
@@ -36,42 +29,24 @@
             justify-content: space-between;
         }
 
-        /* Estilos de Impresión */
         @media print {
-            body {
-                background: white !important;
-                padding: 0 !important;
-                margin: 0 !important;
-            }
-            .no-print {
-                display: none !important;
-            }
+            body { background: white !important; padding: 0 !important; margin: 0 !important; }
+            .no-print { display: none !important; }
             .paper-page {
                 box-shadow: none !important;
                 padding: 12mm !important;
                 width: 100% !important;
-                min-height: auto !important;
                 margin: 0 !important;
-                page-break-after: avoid;
-                page-break-inside: avoid;
             }
-            .page-break {
-                page-break-before: always;
-            }
-            @page {
-                size: letter portrait;
-                margin: 0;
-            }
+            @page { size: letter portrait; margin: 0; }
         }
 
-        /* Estilos de tabla estilizada */
         .quote-table th {
             background-color: #f8fafc;
             color: #334155;
             font-weight: 700;
             text-transform: uppercase;
             font-size: 0.75rem;
-            letter-spacing: 0.05em;
             border-bottom: 2px solid #e2e8f0;
             padding: 10px 12px;
         }
@@ -81,7 +56,6 @@
             font-size: 0.875rem;
         }
 
-        /* Esquina superior con corte de diseño */
         .corner-accent {
             position: absolute;
             top: 0;
@@ -96,12 +70,12 @@
 </head>
 <body class="min-h-screen pb-12">
 
-    <!-- Header principal de la aplicación -->
+    <!-- Header principal -->
     <header class="bg-slate-900 text-white py-4 px-6 shadow-md no-print mb-8 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
             <div class="flex items-center space-x-3">
                 <div class="bg-sky-500 p-2 rounded-lg text-white">
-                    <i class="fa-solid font-bold fa-snowflake text-2xl"></i>
+                    <i class="fa-solid fa-snowflake text-2xl"></i>
                 </div>
                 <div>
                     <h1 class="text-xl font-bold tracking-wide">KOOLL AIRE - GENERADOR DE COTIZACIONES</h1>
@@ -131,4 +105,158 @@
                 <div class="space-y-4">
                     <div class="grid grid-cols-3 gap-3">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Cotización #</label>
+                            <input type="text" id="inputFolio" oninput="updateDocument()" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-sky-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Fecha</label>
+                            <input type="text" id="inputFecha" oninput="updateDocument()" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-sky-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Vigencia</label>
+                            <input type="text" id="inputVigencia" oninput="updateDocument()" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-sky-500 outline-none">
+                        </div>
+                    </div>
+
+                    <div class="pt-2 border-t">
+                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Cliente / Receptor</h3>
+                        <div class="space-y-2">
+                            <div>
+                                <label class="block text-xs text-slate-600">Empresa / Nombre</label>
+                                <input type="text" id="inputClienteEmpresa" oninput="updateDocument()" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-sky-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-600">Ubicación / Sucursal</label>
+                                <input type="text" id="inputClienteSucursal" oninput="updateDocument()" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-sky-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-600">Atención a:</label>
+                                <input type="text" id="inputClienteAtencion" oninput="updateDocument()" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-sky-500 outline-none">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-2 border-t">
+                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Datos del Emisor (Kooll)</h3>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-xs text-slate-600">Técnico Responsable</label>
+                                <input type="text" id="inputTecnico" oninput="updateDocument()" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-sky-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-600">Teléfono</label>
+                                <input type="text" id="inputTelefono" oninput="updateDocument()" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-sky-500 outline-none">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Conceptos / Servicios -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <div class="flex justify-between items-center mb-4 border-b pb-3">
+                    <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-sky-600"></i> Conceptos / Servicios
+                    </h2>
+                    <button onclick="addItem()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-lg transition flex items-center gap-1">
+                        <i class="fa-solid fa-plus"></i> Agregar Servicio
+                    </button>
+                </div>
+
+                <div id="itemsContainer" class="space-y-4 max-h-[350px] overflow-y-auto pr-1"></div>
+
+                <div class="pt-4 border-t mt-4 flex items-center justify-between">
+                    <label class="text-sm font-medium text-slate-700 flex items-center gap-2">
+                        <input type="checkbox" id="inputAplicarIVA" checked onchange="updateDocument()" class="w-4 h-4 text-sky-600 rounded">
+                        Aplicar IVA (16%)
+                    </label>
+                </div>
+            </div>
+
+            <!-- Observaciones y Términos -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <h2 class="text-lg font-bold text-slate-800 border-b pb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-file-contract text-sky-600"></i> Observaciones y Términos
+                </h2>
+                
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Puntos a Realizar (Uno por línea)</label>
+                    <textarea id="inputPuntos" rows="4" oninput="updateDocument()" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-sky-500 outline-none font-mono text-xs"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Términos y Condiciones (Uno por línea)</label>
+                    <textarea id="inputTerminos" rows="4" oninput="updateDocument()" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-sky-500 outline-none font-mono text-xs"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- VISTA PREVIA DEL DOCUMENTO -->
+        <div class="lg:col-span-7 flex justify-center items-start">
+            <div class="paper-page" id="printableArea">
+                <div class="corner-accent"></div>
+
+                <div>
+                    <!-- Encabezado con Logo y Datos -->
+                    <div class="grid grid-cols-12 gap-4 border-b border-slate-200 pb-4 mb-4 items-center">
+                        <div class="col-span-4 flex justify-center items-center">
+                            <img src="Logo.PNG" alt="Logo Kooll Aire" class="w-32 h-32 object-contain">
+                        </div>
+
+                        <div class="col-span-8 flex flex-col justify-between">
+                            <div>
+                                <h1 class="text-2xl font-black tracking-tight text-slate-800 leading-none">KOOLL AIRE</h1>
+                                <p class="text-xs font-bold text-sky-600 tracking-wider">ACONDICIONADO Y REFRIGERACIÓN</p>
+                                <div class="mt-2 text-sm font-extrabold text-slate-800 bg-slate-100 inline-block px-3 py-1 rounded">
+                                    COTIZACIÓN # <span id="docFolio">105</span>
+                                </div>
+                            </div>
+
+                            <div class="text-[11px] text-slate-600 space-y-0.5 mt-2">
+                                <p class="font-bold text-slate-800" id="docSubservicio">Servicios preventivos e instalación en HVAC Refrigeración</p>
+                                <p><span class="font-semibold">Responsable:</span> <span id="docTecnico">Emilio Ángel Vázquez Torres</span></p>
+                                <p>Cilantro Mz1 Lt3a, Col. Tlapechico, Álvaro Obregón, CDMX</p>
+                                <p><span class="font-semibold">Tel:</span> <span id="docTelefono">477 174 3776</span></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Datos del Cliente y Fechas -->
+                    <div class="grid grid-cols-12 gap-4 mb-6 text-xs">
+                        <div class="col-span-7 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                            <p class="font-bold text-sky-700 uppercase tracking-wider text-[10px] mb-1">PREPARADO PARA:</p>
+                            <p class="font-bold text-slate-800 text-sm" id="docClienteEmpresa">LOCKTON MEXICO AGENTE DE SEGUROS Y FIANZAS</p>
+                            <p class="text-slate-600" id="docClienteSucursal">Oficinas Insurgentes</p>
+                            <div class="mt-2 pt-2 border-t border-slate-200">
+                                <p class="text-slate-500"><span class="font-bold text-slate-700">ATENCIÓN A:</span> <span id="docClienteAtencion" class="font-semibold text-slate-800">Alejandro Gomez</span></p>
+                            </div>
+                        </div>
+
+                        <div class="col-span-5 bg-sky-50/50 p-3 rounded-lg border border-sky-100 flex flex-col justify-center space-y-2">
+                            <div>
+                                <p class="text-slate-500 text-[10px] font-bold uppercase">Fecha de Emisión:</p>
+                                <p class="font-bold text-slate-800" id="docFecha">13 de Octubre, 2026</p>
+                            </div>
+                            <div>
+                                <p class="text-slate-500 text-[10px] font-bold uppercase">Vigencia:</p>
+                                <p class="font-semibold text-slate-700" id="docVigencia">15 Días</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabla de Servicios/Productos -->
+                    <table class="w-full quote-table text-left mb-6">
+                        <thead>
+                            <tr>
+                                <th class="w-7/12">DESCRIPCIÓN DEL SERVICIO</th>
+                                <th class="text-center w-1/12">CANT.</th>
+                                <th class="text-right w-2/12">P. UNITARIO</th>
+                                <th class="text-right w-2/12">TOTAL</th>
+                            </tr>
+                        </thead>
+                        <tbody id="docItemsBody"></tbody>
+                    </table>
+
+                    <!-- Puntos a Realizar -->
+                    <div class="mb-6">
+                        <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2 border-b pb-1">P
